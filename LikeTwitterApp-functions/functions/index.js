@@ -1,16 +1,21 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const express = require('express');
+const app = require('express')();
+const firebase = require('firebase');
 
 const serviceAccount = require('../key/serviceAccountKey.json');
-
-app = express();
+const firebaseConfig = require('../key/firebaseconfig');
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://liketwitterapp.firebaseio.com"
   });
 
+firebase.initializeApp(firebaseConfig.firebaseConfig);
+
+app.get('/test', (req, res) => {
+    res.status(200).json({ message: `${firebaseConfig.firebaseConfig.apiKey}`});
+})
 
 app.get('/screams', (req, res) => {
     admin.firestore().collection('screams')
@@ -49,5 +54,28 @@ app.post('/scream', (req, res) => {
             console.error(err);
         });
 });
+
+//Signup route
+app.post('/signup', (req, res) => {
+    const newUser = {
+        email: req.body.email,
+        password: req.body.password,
+        confirmPassword: req.body.confirmPassword,
+        handle: req.body.handle
+    };
+
+    // TODO: validate data
+
+    firebase.auth()
+        .createUserWithEmailAndPassword(newUser.email, newUser.password)
+        .then(data => {
+            return res.status(201)
+                .json({ message: `user ${data.user.uid} signed up successfully` })
+        })
+        .catch(err => {
+            console.error(err);
+            return res.status(500).json({ error: err.code});
+        });
+})
 
 exports.api = functions.https.onRequest(app);
