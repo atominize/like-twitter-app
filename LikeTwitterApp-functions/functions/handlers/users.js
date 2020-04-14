@@ -18,6 +18,20 @@ const isEmail = (email) => {
     else return false;
 }
 
+const reduceUserDetails = (data) => {
+    let userDetails = {};
+
+    if(!isEmpty(data.bio.trim())) userDetails.bio = data.bio;
+    if(!isEmpty(data.website.trim())) {
+        if(data.website.trim().substring(0, 4) !== 'http') {
+            userDetails.website = `http://${data.website.trim()}`;
+        } else userDetails.website = data.bio
+    }
+    if(!isEmpty(data.location.trim())) userDetails.location = data.location;
+
+    return userDetails;
+}
+
 exports.signup = (req, res) => {
     const newUser = {
         email: req.body.email,
@@ -115,6 +129,19 @@ exports.login = (req, res) => {
         })
 };
 
+exports.addUserDetails = (req, res) => {
+ let userDetails = reduceUserDetails(req.body);
+
+ db.doc(`/users/${req.user.handle}`).update(userDetails)
+    .then(() => {
+        return res.json({ message: 'Details added successfully' });
+    })
+    .catch(err => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
 exports.uploadImage = (req, res) => {
     const Busboy = require('busboy');
     const path = require('path');
@@ -127,10 +154,9 @@ exports.uploadImage = (req, res) => {
     let imageToBeUploaded = {};
 
     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-        console.log(fieldname);
-        console.log(filename);
-        console.log(mimetype);
-        console.log(req.user.handle);
+        if(mimetype !== 'image/png' && mimetype !== 'image/jpeg') {
+            return res.status(400).json({ error: 'wrong file type submitted'})
+        }
 
         const imageExtention = filename.split('.')[filename.split('.').length - 1];
         imageFilename = `${Math.round(Math.random()*10000000000)}.${imageExtention}`;
