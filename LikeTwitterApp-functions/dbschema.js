@@ -10,7 +10,7 @@ let db = {
             website: 'https//user.com',
             location: 'somewhere, in the world'
         }
-    ]
+    ],
     screams: [
         {
             userHandle: 'user',
@@ -19,5 +19,30 @@ let db = {
             likeCount: 5,
             commentCount: 2
         }
+    ]
+};
+
+const userDetails = {
+    //Redux data
+    credentials: {
+        userId: 'dljsdiojeiofs;eodkjfd;',
+        email: 'user@email.com',
+        handle: 'user',
+        createdAt: '2020-04-10T10:54:18.985Z',
+        imageUrl: 'image/dsffioehfs',
+        bio: 'Hello, my name is user, nice to meet you',
+        website: 'https//user.com',
+        location: 'somewhere, in the world'
+    },
+    likes: [
+        {
+            userHandle: 'user',
+            screamId: 'hhijkj;ldjihef;'
+        },
+        {
+            userHandle: 'user',
+            screamId: 'jl;sfie;afs;fa'
+        }
+
     ]
 }

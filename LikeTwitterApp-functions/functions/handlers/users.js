@@ -25,7 +25,7 @@ const reduceUserDetails = (data) => {
     if(!isEmpty(data.website.trim())) {
         if(data.website.trim().substring(0, 4) !== 'http') {
             userDetails.website = `http://${data.website.trim()}`;
-        } else userDetails.website = data.bio
+        } else userDetails.website = data.website;
     }
     if(!isEmpty(data.location.trim())) userDetails.location = data.location;
 
@@ -140,6 +140,29 @@ exports.addUserDetails = (req, res) => {
         console.error(err);
         return res.status(500).json({ error: err.code });
     });
+};
+
+exports.getAuthUserDetails = (req, res) => {
+    let userData = {};
+    db.doc(`/users/${req.user.handle}`).get()
+        .then(doc => {
+            if(doc.exists) {
+                userData.userCredentials = doc.data();
+                return db.collection('likes')
+                    .where('userhandle', '==', req.user.handle).get();
+            }
+        })
+        .then(data => {
+            userData.likes = [];
+            data.forEach(doc => {
+                userData.likes.push(doc.data());
+            });
+            return res.json(userData);
+        })
+        .catch(err => {
+            console.error(err);
+            return res.status(500).json({ error: err.code });
+        });
 };
 
 exports.uploadImage = (req, res) => {

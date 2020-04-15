@@ -5,7 +5,7 @@ const app = require('express')();
 const FbAuth = require('./utils/fbAuth');
 
 const { getAllScreams, postOneScream } = require('./handlers/screams');
-const { signup, login, addUserDetails, uploadImage } = require('./handlers/users');
+const { signup, login, addUserDetails, getAuthUserDetails, uploadImage } = require('./handlers/users');
 
 
 // scream routes
@@ -20,6 +20,7 @@ app.post('/login', login);
 
 //user details
 app.post('/user', FbAuth, addUserDetails)
+app.get('/user', FbAuth, getAuthUserDetails)
 
 // upload image
 app.post('/user/image', FbAuth, uploadImage)
