@@ -11,7 +11,7 @@ const { signup, login, addUserDetails, getAuthUserDetails, uploadImage } = requi
 // scream routes
 app.get('/screams', getAllScreams);
 app.post('/scream', FbAuth, postOneScream);
-app.get('scream/:screamId', getScream);
+app.get('/scream/:screamId', getScream);
 
 //Signup route
 app.post('/signup', signup);
