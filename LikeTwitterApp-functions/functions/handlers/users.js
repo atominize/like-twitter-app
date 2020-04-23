@@ -2,7 +2,7 @@ const { db, admin } = require('../utils/admin');
 
 const firebase = require('firebase');
 
-const firebaseConfig = require('../../key/firebaseconfig');
+const firebaseConfig = require('../key/firebaseconfig');
 
 firebase.initializeApp(firebaseConfig.firebaseConfig);
 
